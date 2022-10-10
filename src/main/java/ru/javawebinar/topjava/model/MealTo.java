@@ -31,7 +31,7 @@ public class MealTo {
     }
 
     public boolean isExceed() {
-        return true;
+        return excess;
     }
 
 
