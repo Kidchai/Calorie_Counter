@@ -14,9 +14,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
-    private final List<Meal> meals;
+    private static final List<Meal> meals;
 
-    {
+    static {
         meals = new ArrayList<>();
         meals.add(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Breakfast", 500));
         meals.add(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Lunch", 1000));
@@ -26,24 +26,23 @@ public class MealsUtil {
         meals.add(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Dinner", 510));
     }
 
-    public List<MealTo> getMealList() {
+    public static List<MealTo> getMealList() {
         int caloriesPerDay = 2000;
         return filteredByStreams(meals, null, null, caloriesPerDay);
     }
 
-    private List<MealTo> filteredByStreams(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    private static List<MealTo> filteredByStreams(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(
                         Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))
                 );
 
         return meals.stream()
-                .filter(meal -> TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime))
                 .map(meal -> createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }
 
-    private MealTo createTo(Meal meal, boolean excess) {
+    private static MealTo createTo(Meal meal, boolean excess) {
         return new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 }
