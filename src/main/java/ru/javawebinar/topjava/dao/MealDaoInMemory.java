@@ -5,11 +5,12 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealDAO implements MealInterfaceDAO {
-    private final Map<Integer, Meal> mealMap = new HashMap<>();
+public class MealDaoInMemory implements MealDao {
+    private final Map<Integer, Meal> mealMap = new Hashtable<>();
     public static final AtomicInteger index = new AtomicInteger();
 
     {
@@ -17,14 +18,14 @@ public class MealDAO implements MealInterfaceDAO {
     }
 
     @Override
-    public Meal save(Meal meal) {
+    public void save(Meal meal) {
         if (!meal.hasId()) {
             meal.setId(index.getAndIncrement());
             mealMap.put(meal.getId(), meal);
-            return meal;
+            return;
         }
 
-        return mealMap.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        mealMap.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override

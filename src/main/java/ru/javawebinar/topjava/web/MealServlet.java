@@ -2,7 +2,7 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.dao.MealDAO;
+import ru.javawebinar.topjava.dao.MealDaoInMemory;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -16,7 +16,7 @@ import java.time.temporal.ChronoUnit;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
-    private final MealDAO meals = new MealDAO();
+    private final MealDaoInMemory meals = new MealDaoInMemory();
     private static final Logger log = getLogger(MealServlet.class);
 
     @Override
@@ -28,25 +28,28 @@ public class MealServlet extends HttpServlet {
         switch (action) {
             case "add":
             case "edit":
-                log.debug("'add' or 'edit', forward to meals");
                 Meal meal;
+                log.debug("'add' or 'edit'");
                 if ("edit".equals(action)) {
                     meal = meals.get(getId(request));
                 } else {
                     meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
                 }
                 request.setAttribute("meal", meal);
+                log.debug("forward to meals");
                 request.getRequestDispatcher("edit.jsp").forward(request, response);
                 break;
             case "delete":
-                log.debug("'delete', redirect to meals");
+                log.debug("'delete'");
                 meals.remove(getId(request));
+                log.debug("redirect to meals");
                 response.sendRedirect("meals");
                 break;
             case "showAll":
-                log.debug("forward to meals");
+                log.debug("'show all'");
                 request.setAttribute("meals",
                         MealsUtil.getFilteredByStreams(meals.getAll(), MealsUtil.CALORIES_PER_DAY));
+                log.debug("forward to meals");
                 request.getRequestDispatcher("meals.jsp").forward(request, response);
         }
     }
