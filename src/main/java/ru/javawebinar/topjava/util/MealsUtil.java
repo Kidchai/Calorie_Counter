@@ -5,16 +5,17 @@ import ru.javawebinar.topjava.model.MealTo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
     private static final List<Meal> meals;
+    private static final int caloriesPerDay = 2000;
 
     static {
         meals = new ArrayList<>();
@@ -26,12 +27,15 @@ public class MealsUtil {
         meals.add(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Dinner", 510));
     }
 
-    public static List<MealTo> getMealList() {
-        int caloriesPerDay = 2000;
-        return filteredByStreams(meals, null, null, caloriesPerDay);
+    public static List<Meal> getAllMeals() {
+        return meals;
     }
 
-    private static List<MealTo> filteredByStreams(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static List<MealTo> getFilteredByStreams(Collection<Meal> meals) {
+        return filteredByStreams(meals, caloriesPerDay, meal -> true);
+    }
+
+    private static List<MealTo> filteredByStreams(Collection<Meal> meals, int caloriesPerDay, Predicate<Meal> filter) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(
                         Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))
@@ -43,6 +47,6 @@ public class MealsUtil {
     }
 
     private static MealTo createTo(Meal meal, boolean excess) {
-        return new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
+        return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 }

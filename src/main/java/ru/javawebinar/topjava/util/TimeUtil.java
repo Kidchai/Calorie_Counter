@@ -10,6 +10,6 @@ public class TimeUtil {
     }
 
     public static String formatDateTime(LocalDateTime dateTime) {
-        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm"));
+        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 }
