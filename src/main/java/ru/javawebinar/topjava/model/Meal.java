@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Meal {
     private Integer id;
@@ -10,15 +11,11 @@ public class Meal {
     private final int calories;
 
     public Meal(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-        this.description = null;
-        this.calories = 0;
+        this(dateTime, null, 0);
     }
 
     public Meal(LocalDateTime dateTime, String description, int calories) {
-        this.dateTime = dateTime;
-        this.description = description;
-        this.calories = calories;
+        this(null, dateTime, description, calories);
     }
 
     public Meal(Integer id, LocalDateTime dateTime, String description, int calories) {
@@ -50,6 +47,10 @@ public class Meal {
 
     public LocalDate getDate() {
         return dateTime.toLocalDate();
+    }
+
+    public LocalTime getTime() {
+        return dateTime.toLocalTime();
     }
 
     public boolean hasId() {

@@ -5,31 +5,32 @@
 <head>
     <title>Meals</title>
     <style type="text/css">
-        TABLE {
+        table {
             width: 400px;
             border: 2px solid #75a3a3;
             background: #f0f5f5;
             border-collapse: collapse;
         }
 
-        TD, TH {
+        td, th {
             text-align: center;
             padding: 3px;
         }
 
-        TH {
+        th {
             color: #3d5c5c;
             border-bottom: 3px solid #75a3a3;
         }
 
-        TD {
+        td {
             border-bottom: 1px solid #75a3a3;
         }
     </style>
 </head>
 <body>
+<h3> <a href="index.html">Home</a></h3>
+<hr>
 <h1>Meals</h1>
-
 <table>
     <tr>
         <th>Date</th>
@@ -41,11 +42,10 @@
 
     <c:forEach var="meal" items="${meals}">
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
-        <tr style="color: ${meal.exceed ? "#e60000" : "#006400"}">
-            <td><%= TimeUtil.formatDateTime(meal.getDateTime())%>
-            </td>
-            <td>${meal.getDescription()}</td>
-            <td>${meal.getCalories()}</td>
+        <tr style="color: ${meal.excess ? "#e60000" : "#006400"}">
+            <td><%= TimeUtil.formatDateTime(meal.getDateTime())%></td>
+            <td>${meal.description}</td>
+            <td>${meal.calories}</td>
             <td><a href="meals?id=${meal.id}&action=edit">Edit</a></td>
             <td><a href="meals?id=${meal.id}&action=delete">Delete</a></td>
         </tr>

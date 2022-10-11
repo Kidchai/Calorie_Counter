@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.model.MealTo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class MealsUtil {
     private static final List<Meal> meals;
-    private static final int caloriesPerDay = 2000;
+    public static final int CALORIES_PER_DAY = 2000;
 
     static {
         meals = new ArrayList<>();
@@ -31,17 +32,18 @@ public class MealsUtil {
         return meals;
     }
 
-    public static List<MealTo> getFilteredByStreams(Collection<Meal> meals) {
-        return filteredByStreams(meals, meal -> true);
+    public static List<MealTo> getFilteredByStreams(Collection<Meal> meals, int caloriesPerDay) {
+        return filteredByStreams(meals, null, null, caloriesPerDay);
     }
 
-    private static List<MealTo> filteredByStreams(Collection<Meal> meals, Predicate<Meal> filter) {
+    private static List<MealTo> filteredByStreams(Collection<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(
                         Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))
                 );
 
         return meals.stream()
+                .filter(meal -> TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime))
                 .map(meal -> createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }

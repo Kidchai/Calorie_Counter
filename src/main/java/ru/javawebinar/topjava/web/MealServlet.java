@@ -45,7 +45,8 @@ public class MealServlet extends HttpServlet {
                 break;
             case "showAll":
                 log.debug("forward to meals");
-                request.setAttribute("meals", MealsUtil.getFilteredByStreams(meals.getAll()));
+                request.setAttribute("meals",
+                        MealsUtil.getFilteredByStreams(meals.getAll(), MealsUtil.CALORIES_PER_DAY));
                 request.getRequestDispatcher("meals.jsp").forward(request, response);
         }
     }
