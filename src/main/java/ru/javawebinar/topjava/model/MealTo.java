@@ -5,11 +5,8 @@ import java.time.LocalDateTime;
 public class MealTo {
     private final Integer id;
     private final LocalDateTime dateTime;
-
     private final String description;
-
     private final int calories;
-
     private final boolean excess;
 
     public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
@@ -24,14 +21,6 @@ public class MealTo {
         return dateTime;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public int getCalories() {
-        return calories;
-    }
-
     public boolean isExceed() {
         return excess;
     }
@@ -39,7 +28,6 @@ public class MealTo {
     public int getId() {
         return this.id.intValue();
     }
-
 
     @Override
     public String toString() {

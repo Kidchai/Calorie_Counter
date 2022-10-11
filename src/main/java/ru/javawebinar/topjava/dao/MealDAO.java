@@ -1,17 +1,16 @@
-package ru.javawebinar.topjava.table;
+package ru.javawebinar.topjava.dao;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealTable implements StoragableMeal {
+public class MealDAO implements MealInterfaceDAO {
     private final Map<Integer, Meal> mealMap = new HashMap<>();
-    private final AtomicInteger index = new AtomicInteger();
+    public static final AtomicInteger index = new AtomicInteger();
 
     {
         MealsUtil.getAllMeals().forEach(this::save);

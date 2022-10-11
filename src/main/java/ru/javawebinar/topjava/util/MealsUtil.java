@@ -23,7 +23,7 @@ public class MealsUtil {
         meals.add(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Lunch", 1000));
         meals.add(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Dinner", 500));
         meals.add(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Breakfast", 1000));
-        meals.add( new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Lunch", 500));
+        meals.add(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Lunch", 500));
         meals.add(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Dinner", 510));
     }
 
@@ -32,10 +32,10 @@ public class MealsUtil {
     }
 
     public static List<MealTo> getFilteredByStreams(Collection<Meal> meals) {
-        return filteredByStreams(meals, caloriesPerDay, meal -> true);
+        return filteredByStreams(meals, meal -> true);
     }
 
-    private static List<MealTo> filteredByStreams(Collection<Meal> meals, int caloriesPerDay, Predicate<Meal> filter) {
+    private static List<MealTo> filteredByStreams(Collection<Meal> meals, Predicate<Meal> filter) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(
                         Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))

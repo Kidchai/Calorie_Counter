@@ -35,6 +35,8 @@
         <th>Date</th>
         <th>Description</th>
         <th>Calories</th>
+        <th></th>
+        <th></th>
     </tr>
 
     <c:forEach var="meal" items="${meals}">
@@ -44,10 +46,13 @@
             </td>
             <td>${meal.getDescription()}</td>
             <td>${meal.getCalories()}</td>
+            <td><a href="meals?id=${meal.id}&action=edit">Edit</a></td>
+            <td><a href="meals?id=${meal.id}&action=delete">Delete</a></td>
         </tr>
     </c:forEach>
-
 </table>
+
+<h3><a href="meals?action=add">Add new meal</a></h3>
 
 </body>
 </html>
