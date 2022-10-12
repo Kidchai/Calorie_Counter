@@ -4,13 +4,12 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealDaoInMemory implements MealDao {
-    private final Map<Integer, Meal> mealMap = new Hashtable<>();
+    private final ConcurrentMap<Integer, Meal> mealMap = new ConcurrentHashMap<>();
     public static final AtomicInteger index = new AtomicInteger();
 
     {
@@ -18,14 +17,15 @@ public class MealDaoInMemory implements MealDao {
     }
 
     @Override
-    public void save(Meal meal) {
+    public Meal save(Meal meal) {
         if (!meal.hasId()) {
             meal.setId(index.getAndIncrement());
             mealMap.put(meal.getId(), meal);
-            return;
+            return meal;
         }
 
         mealMap.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        return meal;
     }
 
     @Override

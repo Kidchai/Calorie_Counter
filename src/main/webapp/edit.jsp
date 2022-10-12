@@ -8,15 +8,20 @@
 <jsp:useBean id="meal" scope="request" type="ru.javawebinar.topjava.model.Meal"/>
 <form method="post" action="meals">
     <input type="hidden" name="mealId" value="${meal.id}"/>
-    <input type="datetime-local" name="dateTime" value="${meal.dateTime}" required/>
+    <label>
+        <input type="datetime-local" name="dateTime" value="${meal.dateTime}" required/>
+    </label>
     <hr>
-    <input type="text" name="description" value="${meal.description}" required/>
+    <label>
+        <input type="text" name="description" value="${meal.description}" required/>
+    </label>
     <hr>
-    <input type="number" name="calories" value="${meal.calories}" required/>
+    <label>
+        <input type="number" name="calories" value="${meal.calories}" required/>
+    </label>
     <hr>
     <input type="submit" value="Submit"/>
     <input type="button" onclick="history.back();" value="Cancel">
-</form>
 </form>
 </body>
 </html>

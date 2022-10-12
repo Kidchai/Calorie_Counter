@@ -1,8 +1,9 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.dao.MealDao;
 import ru.javawebinar.topjava.dao.MealDaoInMemory;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -16,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
-    private final MealDaoInMemory meals = new MealDaoInMemory();
+    private final MealDao meals = new MealDaoInMemory();
     private static final Logger log = getLogger(MealServlet.class);
 
     @Override
@@ -48,7 +49,7 @@ public class MealServlet extends HttpServlet {
             case "showAll":
                 log.debug("'show all'");
                 request.setAttribute("meals",
-                        MealsUtil.getFilteredByStreams(meals.getAll(), MealsUtil.CALORIES_PER_DAY));
+                        MealsUtil.getAllMealsTo(meals.getAll(), MealsUtil.CALORIES_PER_DAY));
                 log.debug("forward to meals");
                 request.getRequestDispatcher("meals.jsp").forward(request, response);
         }

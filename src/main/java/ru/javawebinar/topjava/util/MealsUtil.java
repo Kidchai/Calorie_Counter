@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
@@ -32,7 +31,7 @@ public class MealsUtil {
         return meals;
     }
 
-    public static List<MealTo> getFilteredByStreams(Collection<Meal> meals, int caloriesPerDay) {
+    public static List<MealTo> getAllMealsTo(Collection<Meal> meals, int caloriesPerDay) {
         return filteredByStreams(meals, null, null, caloriesPerDay);
     }
 

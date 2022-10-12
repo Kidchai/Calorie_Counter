@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -43,8 +44,7 @@
     <c:forEach var="meal" items="${meals}">
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
         <tr style="color: ${meal.excess ? "#e60000" : "#006400"}">
-            <td>${meal.formattedDateTime}</td>
-            <td>${meal.description}</td>
+            <td>${meal.dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))}</td>
             <td>${meal.calories}</td>
             <td><a href="meals?id=${meal.id}&action=edit">Edit</a></td>
             <td><a href="meals?id=${meal.id}&action=delete">Delete</a></td>
