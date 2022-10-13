@@ -24,8 +24,7 @@ public class MealDaoInMemory implements MealDao {
             return meal;
         }
 
-        mealMap.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
-        return meal;
+        return mealMap.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override

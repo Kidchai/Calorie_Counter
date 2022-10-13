@@ -8,11 +8,11 @@ public class TimeUtil {
             return true;
         }
 
-        if (startTime != null && endTime == null) {
+        if (endTime == null) {
             return lt.compareTo(startTime) >= 0;
         }
 
-        if (endTime != null && startTime == null) {
+        if (startTime == null) {
             return lt.compareTo(endTime) < 0;
         }
 
