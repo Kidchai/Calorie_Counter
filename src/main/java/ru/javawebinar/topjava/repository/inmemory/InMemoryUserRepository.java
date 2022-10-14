@@ -29,6 +29,9 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
+        if (!repository.containsKey(id)) {
+            return false;
+        }
         repository.remove(id);
         return true;
     }
@@ -38,7 +41,7 @@ public class InMemoryUserRepository implements UserRepository {
         log.info("save {}", user);
         user.setId(counter.incrementAndGet());
         repository.put(user.getId(), user);
-        return user;
+        return repository.containsValue(user) ? user : null;
     }
 
     @Override
