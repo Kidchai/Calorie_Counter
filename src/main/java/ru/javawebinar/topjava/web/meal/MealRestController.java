@@ -5,8 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Controller
@@ -43,8 +47,20 @@ public class MealRestController {
         return service.get(userId, mealId);
     }
 
-    public List<Meal> getAll(int userId) {
+    public List<MealTo> getAll(int userId) {
         log.info("get all meals for user {}", userId);
-        return service.getAll(userId);
+        return MealsUtil.getTos(service.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
+    }
+
+    public List<MealTo> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate,
+                                       LocalTime startTime, LocalTime endTime) {
+        log.info("get all filtered meals for user {}", userId);
+        startDate = startDate == null ? LocalDate.MIN : startDate;
+        endDate = endDate == null ? LocalDate.MAX : endDate;
+        startTime = startTime == null ? LocalTime.MIN : startTime;
+        endTime = endTime == null ? LocalTime.MAX : endTime;
+
+        return MealsUtil.getTos(service.getAllFiltered(userId, startDate, endDate, startTime, endTime),
+                MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 }
