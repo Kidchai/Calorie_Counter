@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.MealService;
-import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.util.List;
@@ -34,10 +31,10 @@ public class MealRestController {
         return service.update(userId, meal);
     }
 
-    public void delete(Meal meal) {
+    public void delete(int mealId) {
         int userId = SecurityUtil.authUserId();
-        log.info("delete meal {} for user {}", meal, userId);
-        service.delete(userId, meal.getId());
+        log.info("delete meal {} for user {}", mealId, userId);
+        service.delete(userId, mealId);
     }
 
     public Meal get(int mealId) {
@@ -46,9 +43,8 @@ public class MealRestController {
         return service.get(userId, mealId);
     }
 
-    public List<MealTo> getAll(User user) {
-        int userId = SecurityUtil.authUserId();
+    public List<Meal> getAll(int userId) {
         log.info("get all meals for user {}", userId);
-        return MealsUtil.getTos(service.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
+        return service.getAll(userId);
     }
 }
