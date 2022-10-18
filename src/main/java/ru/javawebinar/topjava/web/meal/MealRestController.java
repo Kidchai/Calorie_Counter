@@ -7,11 +7,12 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+
+import static ru.javawebinar.topjava.web.SecurityUtil.getAuthUserId;
 
 @Controller
 public class MealRestController {
@@ -24,32 +25,28 @@ public class MealRestController {
     }
 
     public Meal create(Meal meal) {
-        int userId = SecurityUtil.authUserId();
-        log.info("create new meal {} for user {}", meal, userId);
-        return service.create(SecurityUtil.authUserId(), meal);
+        log.info("create new meal {} for user {}", meal, getAuthUserId());
+        return service.create(getAuthUserId(), meal);
     }
 
-    public Meal update(Meal meal) {
-        int userId = SecurityUtil.authUserId();
-        log.info("update meal {} for user {}", meal, userId);
-        return service.update(userId, meal);
+    public void update(int id, Meal meal) {
+        log.info("update meal {}", meal);
+        service.update(getAuthUserId(), meal);
     }
 
     public void delete(int mealId) {
-        int userId = SecurityUtil.authUserId();
-        log.info("delete meal {} for user {}", mealId, userId);
-        service.delete(userId, mealId);
+        log.info("delete meal {} for user {}", mealId, getAuthUserId());
+        service.delete(getAuthUserId(), mealId);
     }
 
     public Meal get(int mealId) {
-        int userId = SecurityUtil.authUserId();
-        log.info("delete meal {} for user {}", mealId, userId);
-        return service.get(userId, mealId);
+        log.info("delete meal {} for user {}", mealId, getAuthUserId());
+        return service.get(getAuthUserId(), mealId);
     }
 
-    public List<MealTo> getAll(int userId) {
-        log.info("get all meals for user {}", userId);
-        return MealsUtil.getTos(service.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
+    public List<MealTo> getAll() {
+        log.info("get all meals for user {}", getAuthUserId());
+        return MealsUtil.getTos(service.getAll(getAuthUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
     public List<MealTo> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate,

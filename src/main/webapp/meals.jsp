@@ -28,7 +28,6 @@
         <input type="hidden" name="action" value="getAllFiltered">
         <input type="date" value="${startDate}" name="startDate"/>
         <input type="date" value="${endDate}" name="endDate"/>
-        <input type="submit" value="Submit">
         <br/><br/>
         Select a time interval:
         <input type="hidden" name="action" value="getAllFiltered">

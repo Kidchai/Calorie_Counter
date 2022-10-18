@@ -20,7 +20,7 @@ public class MealService {
     }
 
     public Meal create(int userId, Meal meal) {
-        return checkNotFoundWithId(repository.save(userId, meal), meal.getId());
+        return repository.save(userId, meal);
     }
 
     public Meal update(int userId, Meal meal) {

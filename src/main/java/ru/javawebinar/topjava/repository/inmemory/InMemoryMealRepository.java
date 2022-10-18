@@ -3,13 +3,10 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,17 +18,13 @@ public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
-    {
-        MealsUtil.meals.forEach(meal -> save(SecurityUtil.authUserId(), meal));
-    }
-
     @Override
     public Meal save(int userId, Meal meal) {
-        Map<Integer, Meal> meals = repository.getOrDefault(userId, new HashMap<>());
+        repository.putIfAbsent(userId, new ConcurrentHashMap<>());
+        Map<Integer, Meal> meals = getAllMeals(userId);
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             meals.put(meal.getId(), meal);
-            repository.put(userId, meals);
             return meal;
         }
         // handle case: update, but not present in storage
@@ -40,7 +33,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int userId, int id) {
-        return repository.get(userId).remove(id) != null;
+        return getAllMeals(userId).remove(id) != null;
     }
 
     @Override
@@ -50,9 +43,13 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return repository.get(userId).values().stream()
+        return getAllMeals(userId).values().stream()
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
+    }
+
+    private Map<Integer, Meal> getAllMeals(int userId) {
+        return repository.getOrDefault(userId, new ConcurrentHashMap<>());
     }
 
     @Override
