@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static ru.javawebinar.topjava.web.SecurityUtil.getAuthUserId;
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
 public class MealRestController {
@@ -24,28 +24,28 @@ public class MealRestController {
     }
 
     public Meal create(Meal meal) {
-        log.info("create new meal {} for user {}", meal, getAuthUserId());
-        return service.create(getAuthUserId(), meal);
+        log.info("create new meal {} for user {}", meal, authUserId());
+        return service.create(authUserId(), meal);
     }
 
     public void update(int id, Meal meal) {
         log.info("update meal {}", meal);
-        service.update(getAuthUserId(), meal);
+        service.update(authUserId(), meal);
     }
 
     public void delete(int mealId) {
-        log.info("delete meal {} for user {}", mealId, getAuthUserId());
-        service.delete(getAuthUserId(), mealId);
+        log.info("delete meal {} for user {}", mealId, authUserId());
+        service.delete(authUserId(), mealId);
     }
 
     public Meal get(int mealId) {
-        log.info("delete meal {} for user {}", mealId, getAuthUserId());
-        return service.get(getAuthUserId(), mealId);
+        log.info("delete meal {} for user {}", mealId, authUserId());
+        return service.get(authUserId(), mealId);
     }
 
     public List<MealTo> getAll(LocalDate startDate, LocalDate endDate,
                                LocalTime startTime, LocalTime endTime) {
-        int userId = getAuthUserId();
+        int userId = authUserId();
         log.info("get all filtered meals for user {}", userId);
         startDate = startDate == null ? LocalDate.MIN : startDate;
         endDate = endDate == null ? LocalDate.MAX : endDate;

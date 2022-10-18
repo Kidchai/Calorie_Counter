@@ -34,6 +34,7 @@
         <input type="time" value="${startTime}" name="startTime"/>
         <input type="time" value="${endTime}" name="endTime"/>
         <input type="submit" value="Submit">
+    </form>
         <table border="1" cellpadding="8" cellspacing="0">
             <thead>
             <tr>
