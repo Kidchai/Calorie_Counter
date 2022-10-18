@@ -33,10 +33,13 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        log.info("save {}", user);
-        user.setId(counter.incrementAndGet());
-        repository.put(user.getId(), user);
-        return repository.containsValue(user) ? user : null;
+        if (user.isNew()) {
+            user.setId(counter.incrementAndGet());
+            repository.put(user.getId(), user);
+            return user;
+        }
+        // handle case: update, but not present in storage
+        return repository.computeIfPresent(user.getId(), (id, oldUser) -> user);
     }
 
     @Override
@@ -49,13 +52,15 @@ public class InMemoryUserRepository implements UserRepository {
     public List<User> getAll() {
         log.info("getAll");
         Collection<User> users = repository.values();
-        return users.stream().sorted(Comparator.comparing(User::getName)).collect(Collectors.toList());
+        return users.stream()
+                .sorted(Comparator.comparing(User::getName).thenComparing(user -> user.getEmail().toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
         Collection<User> users = repository.values();
-        return users.stream().filter(user -> email.equals(user.getEmail())).findAny().orElse(null);
+        return users.stream().filter(user -> email.equalsIgnoreCase(user.getEmail())).findAny().orElse(null);
     }
 }
