@@ -3,9 +3,12 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +20,12 @@ import java.util.stream.Collectors;
 public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
+
+    {
+        MealsUtil.meals.forEach(meal -> save(1, meal));
+        save(1, new Meal(LocalDateTime.of(2022, Month.JANUARY, 31, 10, 0), "Завтрак пользователя 1", 700));
+        save(2, new Meal(LocalDateTime.of(2022, Month.JANUARY, 31, 10, 0), "Завтрак пользователя 2", 800));
+    }
 
     @Override
     public Meal save(int userId, Meal meal) {
@@ -60,4 +69,3 @@ public class InMemoryMealRepository implements MealRepository {
                 .collect(Collectors.toList());
     }
 }
-
