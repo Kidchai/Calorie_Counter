@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -44,20 +43,15 @@ public class MealRestController {
         return service.get(getAuthUserId(), mealId);
     }
 
-    public List<MealTo> getAll() {
-        log.info("get all meals for user {}", getAuthUserId());
-        return MealsUtil.getTos(service.getAll(getAuthUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
-    }
-
-    public List<MealTo> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate,
-                                       LocalTime startTime, LocalTime endTime) {
+    public List<MealTo> getAll(LocalDate startDate, LocalDate endDate,
+                               LocalTime startTime, LocalTime endTime) {
+        int userId = getAuthUserId();
         log.info("get all filtered meals for user {}", userId);
         startDate = startDate == null ? LocalDate.MIN : startDate;
         endDate = endDate == null ? LocalDate.MAX : endDate;
         startTime = startTime == null ? LocalTime.MIN : startTime;
         endTime = endTime == null ? LocalTime.MAX : endTime;
 
-        return MealsUtil.getTos(service.getAllFiltered(userId, startDate, endDate, startTime, endTime),
-                MealsUtil.DEFAULT_CALORIES_PER_DAY);
+        return service.getAll(userId, startDate, endDate, startTime, endTime);
     }
 }

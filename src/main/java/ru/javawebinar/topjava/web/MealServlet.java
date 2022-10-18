@@ -74,24 +74,21 @@ public class MealServlet extends HttpServlet {
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
-                        new Meal(SecurityUtil.getAuthUserId(), LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
                         controller.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "getAllFiltered":
-                LocalDate startDateValue = startDate.isEmpty() ? null : LocalDate.parse(startDate);
-                LocalDate endDateValue = endDate.isEmpty() ? null : LocalDate.parse(endDate);
-                LocalTime startTimeValue = startTime.isEmpty() ? null : LocalTime.parse(startTime);
-                LocalTime endTimeValue = endTime.isEmpty() ? null : LocalTime.parse(endTime);
-
-                request.setAttribute("meals", controller.getAllFiltered(SecurityUtil.getAuthUserId(),
-                        startDateValue, endDateValue, startTimeValue, endTimeValue));
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
             case "getAll":
             default:
+                LocalDate startDateValue = startDate == null || startDate.isEmpty() ? null : LocalDate.parse(startDate);
+                LocalDate endDateValue = endDate == null || endDate.isEmpty() ? null : LocalDate.parse(endDate);
+                LocalTime startTimeValue = startTime == null || startTime.isEmpty() ? null : LocalTime.parse(startTime);
+                LocalTime endTimeValue = endTime == null || endTime.isEmpty() ? null : LocalTime.parse(endTime);
+
                 log.info("getAll");
-                request.setAttribute("meals", controller.getAll());
+                request.setAttribute("meals", controller.getAll(startDateValue, endDateValue, startTimeValue, endTimeValue));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

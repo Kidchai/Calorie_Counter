@@ -3,12 +3,14 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -50,22 +52,37 @@ public class InMemoryMealRepository implements MealRepository {
         return repository.get(userId).get(id);
     }
 
+    private List<MealTo> getMeals(int userId) {
+        List<Meal> meals = new ArrayList<>(repository.getOrDefault(userId, new ConcurrentHashMap<>()).values());
+        //return new ArrayList<>(repository.getOrDefault(userId, new ConcurrentHashMap<>()).values());
+        return MealsUtil.getTos(meals, MealsUtil.DEFAULT_CALORIES_PER_DAY);
+    }
+
     @Override
-    public List<Meal> getAll(int userId) {
-        return getAllMeals(userId).values().stream()
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+    public List<MealTo> getAll(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        return getMeals(userId).stream()
+                .filter(meal -> startDate.compareTo(meal.getDate()) <= 0 && endDate.compareTo(meal.getDate()) >= 0)
+                .filter(meal -> startTime.compareTo(meal.getTime()) <= 0 && endTime.compareTo(meal.getTime()) >= 0)
+                .sorted(Comparator.comparing(MealTo::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
+
+    //    @Override
+//    public List<Meal> getAll(int userId) {
+//        return getAllMeals(userId).values().stream()
+//                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+//                .collect(Collectors.toList());
+//    }
 
     private Map<Integer, Meal> getAllMeals(int userId) {
         return repository.getOrDefault(userId, new ConcurrentHashMap<>());
     }
 
-    @Override
-    public List<Meal> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        return getAll(userId).stream()
-                .filter(meal -> startDate.compareTo(meal.getDate()) <= 0 && endDate.compareTo(meal.getDate()) >= 0)
-                .filter(meal -> startTime.compareTo(meal.getTime()) <= 0 && endTime.compareTo(meal.getTime()) >= 0)
-                .collect(Collectors.toList());
-    }
+//    @Override
+//    public List<Meal> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+//        return getAll(userId).stream()
+//                .filter(meal -> startDate.compareTo(meal.getDate()) <= 0 && endDate.compareTo(meal.getDate()) >= 0)
+//                .filter(meal -> startTime.compareTo(meal.getTime()) <= 0 && endTime.compareTo(meal.getTime()) >= 0)
+//                .collect(Collectors.toList());
+//    }
 }
