@@ -18,6 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
+
 @Repository
 public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
@@ -49,12 +51,12 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal get(int userId, int id) {
-        return repository.get(userId).get(id);
+        return repository.get(userId).getOrDefault(id, null);
     }
 
     private List<MealTo> getMeals(int userId) {
         List<Meal> meals = new ArrayList<>(repository.getOrDefault(userId, new ConcurrentHashMap<>()).values());
-        return MealsUtil.getTos(meals, MealsUtil.DEFAULT_CALORIES_PER_DAY);
+        return MealsUtil.getTos(meals, authUserCaloriesPerDay());
     }
 
     @Override

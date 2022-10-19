@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletConfig;
@@ -31,10 +30,6 @@ public class MealServlet extends HttpServlet {
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         log.info("init {}", appCtx);
         controller = appCtx.getBean(MealRestController.class);
-        SecurityUtil.setAuthUserId(1);
-        MealsUtil.meals.forEach(meal -> controller.update(1, meal));
-        SecurityUtil.setAuthUserId(2);
-        MealsUtil.meals.forEach(meal -> controller.update(2, meal));
     }
 
     @Override
@@ -51,7 +46,7 @@ public class MealServlet extends HttpServlet {
         if (meal.isNew()) {
             controller.create(meal);
         } else {
-            controller.update(meal.getId(), meal);
+            controller.update(meal);
         }
         response.sendRedirect("meals");
     }

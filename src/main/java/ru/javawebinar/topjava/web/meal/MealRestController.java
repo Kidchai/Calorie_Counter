@@ -11,12 +11,14 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
 public class MealRestController {
 
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final MealService service;
 
     public MealRestController(MealService service) {
@@ -24,23 +26,28 @@ public class MealRestController {
     }
 
     public Meal create(Meal meal) {
-        log.info("create new meal {} for user {}", meal, authUserId());
-        return service.create(authUserId(), meal);
+        int userId = authUserId();
+        checkNew(meal);
+        log.info("create new meal {} for user {}", meal, userId);
+        return service.create(userId, meal);
     }
 
-    public void update(int id, Meal meal) {
+    public void update(Meal meal) {
         log.info("update meal {}", meal);
+        assureIdConsistent(meal, meal.getId());
         service.update(authUserId(), meal);
     }
 
     public void delete(int mealId) {
-        log.info("delete meal {} for user {}", mealId, authUserId());
-        service.delete(authUserId(), mealId);
+        int userId = authUserId();
+        log.info("delete meal {} for user {}", mealId, userId);
+        service.delete(userId, mealId);
     }
 
     public Meal get(int mealId) {
-        log.info("delete meal {} for user {}", mealId, authUserId());
-        return service.get(authUserId(), mealId);
+        int userId = authUserId();
+        log.info("delete meal {} for user {}", mealId, userId);
+        return service.get(userId, mealId);
     }
 
     public List<MealTo> getAll(LocalDate startDate, LocalDate endDate,
