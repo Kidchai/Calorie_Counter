@@ -6,13 +6,17 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
@@ -55,18 +59,31 @@ public class MealRestController {
     public List<MealTo> getAll() {
         int userId = authUserId();
         log.info("get all meals for user {}", userId);
-        return service.getAll(userId);
+        List<Meal> meals = service.getAll(userId);
+        return convertToMealTo(meals).stream()
+                .sorted(Comparator.comparing(MealTo::getDateTime).reversed())
+                .collect(Collectors.toList());
     }
 
     public List<MealTo> getFiltered(LocalDate startDate, LocalDate endDate,
-                                    LocalTime startTime, LocalTime endTime) {
+                                    LocalTime sTime, LocalTime eTime) {
         int userId = authUserId();
         log.info("get all filtered meals for user {}", userId);
         startDate = startDate == null ? LocalDate.MIN : startDate;
         endDate = endDate == null ? LocalDate.MAX : endDate;
-        startTime = startTime == null ? LocalTime.MIN : startTime;
-        endTime = endTime == null ? LocalTime.MAX : endTime;
 
-        return service.getFiltered(userId, startDate, endDate, startTime, endTime);
+        List<Meal> mealsByDate = service.getFilteredByDate(userId, startDate, endDate);
+
+        LocalTime startTime = sTime == null ? LocalTime.MIN : sTime;
+        LocalTime endTime = eTime == null ? LocalTime.MAX : eTime;
+
+        return convertToMealTo(mealsByDate).stream()
+                .filter(meal -> startTime.compareTo(meal.getTime()) <= 0 && endTime.compareTo(meal.getTime()) > 0)
+                .sorted(Comparator.comparing(MealTo::getDateTime).reversed())
+                .collect(Collectors.toList());
+    }
+
+    private List<MealTo> convertToMealTo(List<Meal> meals) {
+        return MealsUtil.getTos(meals, authUserCaloriesPerDay());
     }
 }

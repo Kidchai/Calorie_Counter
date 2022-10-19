@@ -3,22 +3,17 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
-import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
 
 @Repository
 public class InMemoryMealRepository implements MealRepository {
@@ -54,24 +49,15 @@ public class InMemoryMealRepository implements MealRepository {
         return repository.get(userId).getOrDefault(id, null);
     }
 
-    private List<MealTo> getMeals(int userId) {
-        List<Meal> meals = new ArrayList<>(repository.getOrDefault(userId, new ConcurrentHashMap<>()).values());
-        return MealsUtil.getTos(meals, authUserCaloriesPerDay());
+    @Override
+    public List<Meal> getAll(int userId) {
+        return new ArrayList<>(repository.getOrDefault(userId, new ConcurrentHashMap<>()).values());
     }
 
     @Override
-    public List<MealTo> getAll(int userId) {
-        return getMeals(userId).stream()
-                .sorted(Comparator.comparing(MealTo::getDateTime).reversed())
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<MealTo> getFiltered(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        return getMeals(userId).stream()
+    public List<Meal> getFilteredByDate(int userId, LocalDate startDate, LocalDate endDate) {
+        return getAll(userId).stream()
                 .filter(meal -> startDate.compareTo(meal.getDate()) <= 0 && endDate.compareTo(meal.getDate()) >= 0)
-                .filter(meal -> startTime.compareTo(meal.getTime()) <= 0 && endTime.compareTo(meal.getTime()) > 0)
-                .sorted(Comparator.comparing(MealTo::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 
