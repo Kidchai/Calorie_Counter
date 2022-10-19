@@ -33,9 +33,11 @@ public class MealRestController {
     }
 
     public void update(Meal meal) {
-        log.info("update meal {}", meal);
-        assureIdConsistent(meal, meal.getId());
-        service.update(authUserId(), meal);
+        int mealId = meal.getId();
+        int userId = authUserId();
+        log.info("update meal {} for user {}", mealId, userId);
+        assureIdConsistent(meal, mealId);
+        service.update(authUserId(), meal, mealId);
     }
 
     public void delete(int mealId) {
@@ -50,8 +52,14 @@ public class MealRestController {
         return service.get(userId, mealId);
     }
 
-    public List<MealTo> getAll(LocalDate startDate, LocalDate endDate,
-                               LocalTime startTime, LocalTime endTime) {
+    public List<MealTo> getAll() {
+        int userId = authUserId();
+        log.info("get all meals for user {}", userId);
+        return service.getAll(userId);
+    }
+
+    public List<MealTo> getFiltered(LocalDate startDate, LocalDate endDate,
+                                    LocalTime startTime, LocalTime endTime) {
         int userId = authUserId();
         log.info("get all filtered meals for user {}", userId);
         startDate = startDate == null ? LocalDate.MIN : startDate;
@@ -59,6 +67,6 @@ public class MealRestController {
         startTime = startTime == null ? LocalTime.MIN : startTime;
         endTime = endTime == null ? LocalTime.MAX : endTime;
 
-        return service.getAll(userId, startDate, endDate, startTime, endTime);
+        return service.getFiltered(userId, startDate, endDate, startTime, endTime);
     }
 }

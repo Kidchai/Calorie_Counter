@@ -83,7 +83,7 @@ public class MealServlet extends HttpServlet {
                 LocalTime endTimeValue = endTime == null || endTime.isEmpty() ? null : LocalTime.parse(endTime);
 
                 log.info("getAll");
-                request.setAttribute("meals", controller.getAll(startDateValue, endDateValue, startTimeValue, endTimeValue));
+                request.setAttribute("meals", controller.getFiltered(startDateValue, endDateValue, startTimeValue, endTimeValue));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

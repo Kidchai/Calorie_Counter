@@ -60,7 +60,14 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public List<MealTo> getAll(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+    public List<MealTo> getAll(int userId) {
+        return getMeals(userId).stream()
+                .sorted(Comparator.comparing(MealTo::getDateTime).reversed())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MealTo> getFiltered(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         return getMeals(userId).stream()
                 .filter(meal -> startDate.compareTo(meal.getDate()) <= 0 && endDate.compareTo(meal.getDate()) >= 0)
                 .filter(meal -> startTime.compareTo(meal.getTime()) <= 0 && endTime.compareTo(meal.getTime()) > 0)
