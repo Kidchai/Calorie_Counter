@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -17,18 +16,13 @@ import java.util.stream.Collectors;
 @Repository
 public class InMemoryUserRepository implements UserRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
-
     private final Map<Integer, User> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
-        if (!repository.containsKey(id)) {
-            return false;
-        }
-        repository.remove(id);
-        return true;
+        return repository.remove(id) != null;
     }
 
     @Override
@@ -51,16 +45,15 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        Collection<User> users = repository.values();
-        return users.stream()
-                .sorted(Comparator.comparing(User::getName).thenComparing(user -> user.getEmail().toLowerCase()))
+        return repository.values().stream()
+                .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail, String::compareToIgnoreCase))
                 .collect(Collectors.toList());
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        Collection<User> users = repository.values();
-        return users.stream().filter(user -> email.equalsIgnoreCase(user.getEmail())).findAny().orElse(null);
+        return repository.values().stream()
+                .filter(user -> email.equalsIgnoreCase(user.getEmail())).findAny().orElse(null);
     }
 }
