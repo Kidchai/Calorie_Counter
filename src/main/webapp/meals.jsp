@@ -26,13 +26,13 @@
     <form action="meals" method="get">
         Select a date interval:&nbsp;
         <input type="hidden" name="action" value="getAllFiltered">
-        <input type="date" value="${startDate}" name="startDate"/>
-        <input type="date" value="${endDate}" name="endDate"/>
+        <input type="date" value="${param.startDate}" name="startDate"/>
+        <input type="date" value="${param.endDate}" name="endDate"/>
         <br/><br/>
         Select a time interval:
         <input type="hidden" name="action" value="getAllFiltered">
-        <input type="time" value="${startTime}" name="startTime"/>
-        <input type="time" value="${endTime}" name="endTime"/>
+        <input type="time" value="${param.startTime}" name="startTime"/>
+        <input type="time" value="${param.endTime}" name="endTime"/>
         <input type="submit" value="Submit">
     </form>
         <table border="1" cellpadding="8" cellspacing="0">
