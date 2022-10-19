@@ -70,6 +70,7 @@ public class MealRestController {
                                     LocalTime sTime, LocalTime eTime) {
         int userId = authUserId();
         log.info("get all filtered meals for user {}", userId);
+
         startDate = startDate == null ? LocalDate.MIN : startDate;
         endDate = endDate == null ? LocalDate.MAX : endDate;
 
