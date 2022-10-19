@@ -28,8 +28,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal save(int userId, Meal meal) {
-        repository.putIfAbsent(userId, new ConcurrentHashMap<>());
-        Map<Integer, Meal> meals = getAllMeals(userId);
+        Map<Integer, Meal> meals = repository.computeIfAbsent(userId, id -> new ConcurrentHashMap<>());
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             meals.put(meal.getId(), meal);
@@ -41,12 +40,14 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int userId, int id) {
-        return repository.get(userId).remove(id, get(userId, id));
+        Map<Integer, Meal> meals = repository.get(userId);
+        return meals != null && meals.remove(id) != null;
     }
 
     @Override
     public Meal get(int userId, int id) {
-        return repository.get(userId).getOrDefault(id, null);
+        Map<Integer, Meal> meals = repository.get(userId);
+        return meals == null ? null : meals.get(id);
     }
 
     @Override
@@ -59,9 +60,5 @@ public class InMemoryMealRepository implements MealRepository {
         return getAll(userId).stream()
                 .filter(meal -> startDate.compareTo(meal.getDate()) <= 0 && endDate.compareTo(meal.getDate()) >= 0)
                 .collect(Collectors.toList());
-    }
-
-    private Map<Integer, Meal> getAllMeals(int userId) {
-        return repository.getOrDefault(userId, new ConcurrentHashMap<>());
     }
 }

@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.javawebinar.topjava.util.DateTimeUtil.isBetweenHalfOpen;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
@@ -78,7 +79,7 @@ public class MealRestController {
         LocalTime endTime = eTime == null ? LocalTime.MAX : eTime;
 
         return convertToMealTo(mealsByDate).stream()
-                .filter(meal -> startTime.compareTo(meal.getTime()) <= 0 && endTime.compareTo(meal.getTime()) > 0)
+                .filter(meal -> isBetweenHalfOpen(meal.getTime(), startTime, endTime))
                 .sorted(Comparator.comparing(MealTo::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
