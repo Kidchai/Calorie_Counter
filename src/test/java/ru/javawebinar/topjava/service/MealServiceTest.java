@@ -14,7 +14,6 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class MealServiceTest extends TestCase {
     }
 
     @Autowired
-    MealService service;
+    private MealService service;
 
     @Test
     public void get() {
@@ -109,8 +108,7 @@ public class MealServiceTest extends TestCase {
 
     @Test
     public void duplicateDateTimeCreate() {
-        Meal duplicateMeal = new Meal(LocalDateTime.of
-                (2022, Month.OCTOBER, 24, 20, 0), "Ужин администратора, повтор", 1000);
+        Meal duplicateMeal = new Meal(adminMeal7.getDateTime(), "Ужин администратора, повтор", 1000);
         assertThrows(DataAccessException.class, () -> service.create(duplicateMeal, ADMIN_ID));
     }
 }

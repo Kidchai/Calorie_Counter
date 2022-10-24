@@ -16,6 +16,10 @@ public class MealTestData {
     public static final int ADMIN_MEAL_1_ID = START_SEQ + 6;
     public static final int ADMIN_MEAL_2_ID = START_SEQ + 7;
     public static final int ADMIN_MEAL_3_ID = START_SEQ + 8;
+    public static final int ADMIN_MEAL_4_ID = START_SEQ + 9;
+    public static final int ADMIN_MEAL_5_ID = START_SEQ + 10;
+    public static final int ADMIN_MEAL_6_ID = START_SEQ + 11;
+    public static final int ADMIN_MEAL_7_ID = START_SEQ + 12;
 
     public static final int MEAL_NOT_FOUND_ID = 10;
 
@@ -28,9 +32,17 @@ public class MealTestData {
     public static final Meal adminMeal1 = new Meal(ADMIN_MEAL_1_ID, LocalDateTime.of
             (2022, Month.OCTOBER, 24, 9, 0), "Завтрак администратора", 400);
     public static final Meal adminMeal2 = new Meal(ADMIN_MEAL_2_ID, LocalDateTime.of
-            (2022, Month.OCTOBER, 24, 14, 30), "Обед администратора", 650);
+            (2022, Month.OCTOBER, 24, 14, 30), "Обед администратора", 500);
     public static final Meal adminMeal3 = new Meal(ADMIN_MEAL_3_ID, LocalDateTime.of
             (2022, Month.OCTOBER, 24, 20, 0), "Ужин администратора", 1000);
+    public static final Meal adminMeal4 = new Meal(ADMIN_MEAL_4_ID, LocalDateTime.of
+            (2022, Month.OCTOBER, 25, 0, 0), "Полуночный перекус администратора", 100);
+    public static final Meal adminMeal5 = new Meal(ADMIN_MEAL_5_ID, LocalDateTime.of
+            (2022, Month.OCTOBER, 25, 10, 0), "Завтрак администратора", 410);
+    public static final Meal adminMeal6 = new Meal(ADMIN_MEAL_6_ID, LocalDateTime.of
+            (2022, Month.OCTOBER, 25, 14, 0), "Обед администратора", 500);
+    public static final Meal adminMeal7 = new Meal(ADMIN_MEAL_7_ID, LocalDateTime.of
+            (2022, Month.OCTOBER, 25, 19, 0), "Ужин администратора", 1000);
 
 
     public static Meal getNew() {
