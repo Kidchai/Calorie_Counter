@@ -34,6 +34,10 @@ public class MealService {
         return repository.getBetweenHalfOpen(atStartOfDayOrMin(startDate), atStartOfNextDayOrMax(endDate), userId);
     }
 
+    public Meal getMealWithUser(int id, int userId) {
+        return checkNotFoundWithId(repository.getMealWithUser(id, userId), id);
+    }
+
     public List<Meal> getAll(int userId) {
         return repository.getAll(userId);
     }
